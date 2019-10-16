@@ -5,7 +5,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-button expand="full" color="dark" (click)="openDetails()">Go to Details with function</ion-button>
-  <ion-button expand="full" color="tertiary" routerLink="/tabs/films/42" routerDirection="forward">Go to Details with link</ion-button>
-  <ion-button expand="full" color="warning" (click)="goToPlanets()">Switch to Planets</ion-button>
+  <ion-list>
+    <ion-item button detail lines="inset" *ngFor="let film of (films | async)?.results" (click)="openDetail(film)">
+      {{film.title}}
+    </ion-item>
+  </ion-list>
 </ion-content>
