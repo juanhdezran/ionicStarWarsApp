@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { FavoriteService } from 'src/app/services/favorite.service';
 
 @Component({
   selector: 'app-film-details',
@@ -12,13 +13,36 @@ export class FilmDetailsPage implements OnInit {
 
   filmId = null;
   film: any;
+  isFavorite: boolean;
 
-  constructor(private activatedRoute: ActivatedRoute, private api: ApiService, private emailComposer: EmailComposer) { }
+  constructor(
+    private activatedRoute: ActivatedRoute, 
+    private api: ApiService, 
+    private emailComposer: EmailComposer,
+    private favoriteService: FavoriteService
+  ) { }
 
   ngOnInit() {
     this.filmId = this.activatedRoute.snapshot.paramMap.get('id');
     this.api.getFilm(this.filmId).subscribe( film => {
       this.film = film;
+    });
+    this.favoriteService.isFavorite(this.filmId).then(data => {
+      this.isFavorite =  data;
+    }).catch(err => {
+      //catch errors
+    });
+  }
+
+  favoriteFilm() {
+    this.favoriteService.favoriteFilm(this.filmId).then(() => {
+      this.isFavorite = true;
+    });
+  }
+ 
+  unfavoriteFilm() {
+    this.favoriteService.unfavoriteFilm(this.filmId).then(() => {
+      this.isFavorite = false;
     });
   }
 
